@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Voto de una persona sobre la fecha y hora probable de parto.
+// El email es la clave única: una persona = un voto (pero puede cambiarlo).
+model Vote {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  // ISO date string (YYYY-MM-DD) del día elegido (entre 2026-11-16 y 2026-12-26)
+  date      String
+  // Hora del día (0-23) elegida
+  hour      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date])
+  @@index([hour])
+}
+
+// Configuración global del sitio (una sola fila).
+// Guarda el password de admin y, cuando Santiago nazca, la fecha real.
+model Setting {
+  id           String   @id @default("global")
+  // Password simple para el panel admin (comparado en texto plano, suficiente para este caso)
+  adminPassword String
+  // Si Santiago ya nació, fecha real (ISO YYYY-MM-DD), sino null
+  actualDate   String?
+  // Si Santiago ya nació, hora real (0-23), sino null
+  actualHour   Int?
+  createdAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

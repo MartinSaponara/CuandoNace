@@ -1,0 +1,45 @@
+// Schema para PostgreSQL (Vercel/Neon/Supabase).
+// En producción, setear DATABASE_URL con URL de Postgres y usar este schema.
+// Para desarrollo local, usar schema.prisma (SQLite).
+//
+// Para deploy en Vercel:
+// 1. Crear cuenta en neon.tech (gratis hasta 0.5GB)
+// 2. Crear proyecto, copiar connection string
+// 3. En Vercel → Settings → Environment Variables → agregar DATABASE_URL
+// 4. En Vercel → Settings → Build & Development Settings → 
+//    - Install Command: bun install
+//    - Build Command: cp prisma/schema.postgres.prisma prisma/schema.prisma && bun run prisma generate && bun run prisma db push --accept-data-loss && bun run build
+// 5. También setear ADMIN_PASSWORD (si querés cambiar el default 'santiago2026')
+// 6. Deploy
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  date      String
+  hour      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date])
+  @@index([hour])
+}
+
+model Setting {
+  id            String   @id @default("global")
+  adminPassword String
+  actualDate    String?
+  actualHour    Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
