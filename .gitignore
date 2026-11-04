@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 node_modules
 /.pnp
@@ -27,15 +25,10 @@ node_modules
 # debug
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
+yarn-error.log
 
 # vercel
 .vercel
-
 
 # typescript
 *.tsbuildinfo
@@ -46,17 +39,24 @@ local-*
 *.log
 dev.log
 dev.out.log
-test
 prompt
-
 server.log
-# Skills directory
-/skills/
+
 # SQLite database (dev only - en prod se usa Postgres)
 db/*.db
 db/*.db-journal
 
-# Z.ai sandbox internals
+# Z.ai sandbox internals (no son de la web, los ignoramos para Vercel)
 .zscripts/
-tool-results/
 .bun/
+tool-results/
+
+# Archivos del sandbox original que NO son parte de la web
+/download/
+/tests/
+/examples/
+/mini-services/
+/skills/
+/env_setup/
+Caddyfile
+bun.lock
