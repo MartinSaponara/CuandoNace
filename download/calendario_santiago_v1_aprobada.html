@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>¿Cuándo nacerá Santiago? — Calendario</title>
+<meta name="author" content="Z.ai">
+<meta name="description" content="Calendario de apuestas para la fecha probable de parto de Santiago">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+@page { size: A4 landscape; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cream: #F4FAFE;
+  --sky: #BDE3F5;
+  --sky-soft: #E5F2FA;
+  --sky-deep: #5BA7D9;
+  --mint: #C7E8CE;
+  --mint-soft: #E6F3E9;
+  --mint-deep: #6BB58A;
+  --yellow: #FFE9B1;
+  --ink: #3D4A5C;
+  --muted: #AEB6C2;
+  --muted-bg: #ECEEF2;
+  --line: #DEE5ED;
+}
+html, body {
+  background: var(--cream);
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.page {
+  width: 297mm;
+  height: 210mm;
+  padding: 10mm 13mm 8mm;
+  page-break-after: always;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+}
+.page:last-child { page-break-after: auto; }
+
+/* Decorative background: radial gradients painted directly on .bg-decor.
+   No positioned children, so nothing can overflow the page. */
+.bg-decor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(189, 227, 245, 0.70) 0%, rgba(189, 227, 245, 0.25) 18%, transparent 38%),
+    radial-gradient(circle at 0% 100%, rgba(199, 232, 206, 0.60) 0%, rgba(199, 232, 206, 0.22) 16%, transparent 35%),
+    radial-gradient(circle at 92% 88%, rgba(189, 227, 245, 0.45) 0%, transparent 18%);
+}
+
+.header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 5mm;
+  border-bottom: 0.4mm solid var(--line);
+  padding-bottom: 3.5mm;
+}
+.header-left .eyebrow {
+  font-size: 8.5pt;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--mint-deep);
+  font-weight: 600;
+  margin-bottom: 1.5mm;
+}
+.header-left h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 30pt;
+  font-weight: 700;
+  line-height: 1.0;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.header-left .subtitle {
+  font-size: 10.5pt;
+  color: var(--ink);
+  opacity: 0.7;
+  margin-top: 1.2mm;
+  font-weight: 400;
+}
+.header-right {
+  text-align: right;
+  font-size: 8.5pt;
+  color: var(--ink);
+  opacity: 0.75;
+  line-height: 1.4;
+}
+.header-right .month-label {
+  font-family: 'Baloo 2', cursive;
+  font-size: 17pt;
+  color: var(--sky-deep);
+  font-weight: 600;
+  margin-bottom: 0.5mm;
+}
+
+.instr {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  background: #fff;
+  border: 0.3mm solid var(--line);
+  border-radius: 2mm;
+  padding: 2.2mm 4mm;
+  margin-bottom: 4mm;
+  font-size: 9pt;
+  line-height: 1.4;
+}
+.instr .icon { font-size: 11pt; color: var(--mint-deep); }
+.instr strong { color: var(--mint-deep); }
+
+.cal {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: 6.5mm repeat(6, 1fr);
+  gap: 1.0mm;
+}
+.cal .dow {
+  text-align: center;
+  font-family: 'Baloo 2', cursive;
+  font-size: 8.5pt;
+  font-weight: 600;
+  color: var(--ink);
+  opacity: 0.55;
+  padding: 1mm 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cal .dow.weekend { color: var(--sky-deep); opacity: 0.9; }
+
+.cell {
+  background: #fff;
+  border: 0.3mm solid var(--line);
+  border-radius: 1.8mm;
+  padding: 1.3mm 1.8mm 1.5mm;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+.cell.empty {
+  background: transparent;
+  border: none;
+}
+.cell.muted {
+  background: var(--muted-bg);
+  border-color: transparent;
+  padding: 1.3mm 1.8mm;
+}
+.cell.muted .day-num {
+  font-family: 'Baloo 2', cursive;
+  font-size: 11pt;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1;
+}
+.cell.muted .day-month {
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5pt;
+  font-weight: 500;
+  color: var(--muted);
+  opacity: 0.7;
+  margin-top: 0.5mm;
+  letter-spacing: 0.05em;
+}
+.cell.muted .checkbox,
+.cell.muted .name-line { display: none; }
+
+.cell.active .day-num {
+  font-family: 'Baloo 2', cursive;
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 1.2mm;
+}
+.cell.active .day-month {
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5pt;
+  font-weight: 500;
+  color: var(--ink);
+  opacity: 0.55;
+  letter-spacing: 0.05em;
+}
+.cell.active .checkbox {
+  width: 3.5mm; height: 3.5mm;
+  border: 0.35mm solid var(--sky-deep);
+  border-radius: 0.8mm;
+  margin-top: auto;
+  margin-bottom: 1.2mm;
+  background: #fff;
+}
+.cell.active .name-line {
+  border-bottom: 0.3mm solid var(--line);
+  height: 3mm;
+  width: 100%;
+}
+
+/* Weekend cells get a soft sky tint */
+.cell.active.sat,
+.cell.active.sun {
+  background: var(--sky-soft);
+}
+
+/* Highlighted FPP cell (Dec 16) */
+.cell.fpp {
+  background: var(--mint-deep) !important;
+  border: 0.5mm solid var(--mint-deep);
+  color: #fff;
+  box-shadow: 0 0 0 0.3mm rgba(107, 181, 138, 0.3);
+}
+.cell.fpp .day-num { color: #fff; font-size: 15pt; }
+.cell.fpp .day-num .day-month { color: #fff; opacity: 0.9; }
+.cell.fpp .day-month { color: #fff; opacity: 0.95; }
+.cell.fpp .checkbox {
+  border-color: #fff;
+  background: rgba(255,255,255,0.18);
+}
+.cell.fpp .name-line { border-color: rgba(255,255,255,0.65); }
+.cell.fpp .star {
+  position: absolute;
+  bottom: 1.2mm; right: 1.5mm;
+  color: #FFE066;
+  font-size: 11pt;
+  line-height: 1;
+  text-shadow: 0 0 1mm rgba(0,0,0,0.15);
+}
+
+.footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3mm;
+  font-size: 7.5pt;
+  color: var(--ink);
+  opacity: 0.65;
+}
+.footer .legend {
+  display: flex;
+  gap: 5mm;
+  align-items: center;
+}
+.footer .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5mm;
+}
+.footer .legend-box {
+  width: 3mm; height: 3mm;
+  border-radius: 0.8mm;
+  border: 0.2mm solid var(--line);
+  background: #fff;
+}
+.footer .legend-box.fpp { background: var(--mint-deep); border-color: var(--mint-deep); }
+.footer .legend-box.muted { background: var(--muted-bg); border-color: transparent; }
+
+</style>
+</head>
+<body>
+
+    <section class="page" data-month="Noviembre">
+      <div class="bg-decor"></div>
+      <header class="header">
+        <div class="header-left">
+          <div class="eyebrow">Calendario interactivo</div>
+          <h1>¿Cuándo nacerá Santiago?</h1>
+          <div class="subtitle">Noviembre 2026</div>
+        </div>
+        <div class="header-right">
+          <div class="month-label">Noviembre 2026</div>
+          <div>Hoja 1 de 2</div>
+        </div>
+      </header>
+
+      <div class="instr">
+        <span class="icon">✎</span>
+        <span><strong>Cómo jugar:</strong> Elegí el día que creés que nacerá Santiago, marcá el cuadrito ☐ y escribi tu nombre en la línea de abajo.</span>
+      </div>
+
+      <div class="cal">
+        <div class="dow">Lun</div><div class="dow">Mar</div><div class="dow">Mié</div><div class="dow">Jue</div><div class="dow">Vie</div><div class="dow weekend">Sáb</div><div class="dow weekend">Dom</div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell dom muted"><div class="day-num">1</div><div class="day-month">nov</div></div><div class="cell lun muted"><div class="day-num">2</div><div class="day-month">nov</div></div><div class="cell mar muted"><div class="day-num">3</div><div class="day-month">nov</div></div><div class="cell mie muted"><div class="day-num">4</div><div class="day-month">nov</div></div><div class="cell jue muted"><div class="day-num">5</div><div class="day-month">nov</div></div><div class="cell vie muted"><div class="day-num">6</div><div class="day-month">nov</div></div><div class="cell sab muted"><div class="day-num">7</div><div class="day-month">nov</div></div><div class="cell dom muted"><div class="day-num">8</div><div class="day-month">nov</div></div><div class="cell lun muted"><div class="day-num">9</div><div class="day-month">nov</div></div><div class="cell mar muted"><div class="day-num">10</div><div class="day-month">nov</div></div><div class="cell mie muted"><div class="day-num">11</div><div class="day-month">nov</div></div><div class="cell jue muted"><div class="day-num">12</div><div class="day-month">nov</div></div><div class="cell vie muted"><div class="day-num">13</div><div class="day-month">nov</div></div><div class="cell sab muted"><div class="day-num">14</div><div class="day-month">nov</div></div><div class="cell dom muted"><div class="day-num">15</div><div class="day-month">nov</div></div><div class="cell lun active"><div class="day-num">16 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">17 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">18 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">19 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">20 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">21 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">22 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">23 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">24 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">25 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">26 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">27 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">28 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">29 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">30 <span class="day-month">nov</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div>
+      </div>
+
+      <footer class="footer">
+        
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-box active"></span>
+          <span>Día para apostar</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-box fpp"></span>
+          <span>16 dic · fecha probable de parto</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-box muted"></span>
+          <span>Fuera del rango</span>
+        </div>
+      </div>
+    
+        <div>Calendario Santiago · 2026</div>
+      </footer>
+    </section>
+    
+
+    <section class="page" data-month="Diciembre">
+      <div class="bg-decor"></div>
+      <header class="header">
+        <div class="header-left">
+          <div class="eyebrow">Calendario interactivo</div>
+          <h1>¿Cuándo nacerá Santiago?</h1>
+          <div class="subtitle">Diciembre 2026</div>
+        </div>
+        <div class="header-right">
+          <div class="month-label">Diciembre 2026</div>
+          <div>Hoja 2 de 2</div>
+        </div>
+      </header>
+
+      <div class="instr">
+        <span class="icon">✎</span>
+        <span><strong>Cómo jugar:</strong> Elegí el día que creés que nacerá Santiago, marcá el cuadrito ☐ y escribi tu nombre en la línea de abajo.</span>
+      </div>
+
+      <div class="cal">
+        <div class="dow">Lun</div><div class="dow">Mar</div><div class="dow">Mié</div><div class="dow">Jue</div><div class="dow">Vie</div><div class="dow weekend">Sáb</div><div class="dow weekend">Dom</div><div class="cell empty"></div><div class="cell mar active"><div class="day-num">1 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">2 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">3 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">4 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">5 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">6 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">7 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">8 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">9 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">10 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">11 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">12 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">13 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">14 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">15 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie fpp active"><span class="star">★</span><div class="day-num">16 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">17 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">18 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">19 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">20 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">21 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">22 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">23 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">24 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">25 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">26 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom muted"><div class="day-num">27</div><div class="day-month">dic</div></div><div class="cell lun muted"><div class="day-num">28</div><div class="day-month">dic</div></div><div class="cell mar muted"><div class="day-num">29</div><div class="day-month">dic</div></div><div class="cell mie muted"><div class="day-num">30</div><div class="day-month">dic</div></div><div class="cell jue muted"><div class="day-num">31</div><div class="day-month">dic</div></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div>
+      </div>
+
+      <footer class="footer">
+        
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-box active"></span>
+          <span>Día para apostar</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-box fpp"></span>
+          <span>16 dic · fecha probable de parto</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-box muted"></span>
+          <span>Fuera del rango</span>
+        </div>
+      </div>
+    
+        <div>Calendario Santiago · 2026</div>
+      </footer>
+    </section>
+    
+</body></html>

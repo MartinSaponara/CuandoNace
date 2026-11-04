@@ -1,9 +1,14 @@
-"""Genera el HTML del calendario '¿Cuándo nacerá Santiago?' (2 páginas A4 horizontales).
+"""Genera el HTML del calendario '¿Cuándo nacerá Santiago?' — VERSIÓN 2.
 
-Página 1 = Noviembre 2026 (activos: 16–30 nov)
-Página 2 = Diciembre 2026 (activos: 1–26 dic; 16 dic destacado como FPP médica)
+Cambios vs v1:
+- 2 hojas A4 horizontales con 3 semanas cada una (~21 días por hoja)
+- Hoja 1: 16 nov – 6 dic 2026 (3 semanas completas Lun→Dom)
+- Hoja 2: 7 dic – 26 dic 2026 (3 semanas: la última celda Dom 27 queda vacía)
+- Sin celdas atenuadas/muted: solo se muestran los días activos (o celdas vacías al final)
+- Celdas mucho más grandes con 3 líneas para nombres (varias personas pueden firmar)
+- El 16 dic sigue destacado en verde menta con estrella ★ (sin texto "FPP médica")
+- Paleta celeste/verde/crema (sin rosa)
 """
-import calendar
 import datetime
 from pathlib import Path
 
@@ -12,128 +17,111 @@ OUTPUT_HTML = Path("/home/z/my-project/scripts/calendario_santiago.html")
 DOW_ES = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
 DOW_CLASS = ["lun", "mar", "mie", "jue", "vie", "sab", "dom"]
 
-MONTH_LABEL_ES = {11: "Noviembre", 12: "Diciembre"}
 MONTH_ABBR_ES = {11: "nov", 12: "dic"}
 
-# (year, month) -> (start_day, end_day) for the active range
-RANGES = {
-    11: (16, 30),  # November: 16–30 active
-    12: (1, 26),   # December: 1–26 active
-}
-FPP_DATE = (2026, 12, 16)  # 16 de diciembre = Fecha Probable de Parto (FPP médica)
+# Rango de cada hoja (start, end) — start siempre lunes
+SHEETS = [
+    (datetime.date(2026, 11, 16), datetime.date(2026, 12, 6)),  # Hoja 1: 16 nov – 6 dic
+    (datetime.date(2026, 12, 7),  datetime.date(2026, 12, 26)),  # Hoja 2: 7 – 26 dic
+]
+FPP_DATE = datetime.date(2026, 12, 16)  # 16 dic = Fecha Probable de Parto
 
 
-def build_calendar_cells(year: int, month: int) -> list[list]:
-    """Devuelve una lista de semanas; cada semana es una lista de 7 items.
-    Item = None si el día no pertenece al mes, o dict con día / dow_index / estado."""
-    start_active, end_active = RANGES[month]
-    weeks = calendar.Calendar(firstweekday=0).monthdayscalendar(year, month)
-    rows = []
-    for week in weeks:
-        row = []
-        for dow_idx, day in enumerate(week):
-            if day == 0:
-                row.append(None)
+def build_weeks(start: datetime.date, end: datetime.date) -> list[list]:
+    """Devuelve una lista de semanas (filas de 7 celdas).
+    Cada celda es un dict o None si cae fuera del rango (solo al final de la última fila)."""
+    weeks = []
+    cur = start
+    # Aseguramos que start sea lunes
+    assert cur.weekday() == 0, f"Start debe ser lunes, fue {cur} ({cur.weekday()})"
+    while cur <= end:
+        week = []
+        for dow_idx in range(7):
+            if cur > end:
+                week.append(None)  # celda vacía al final
+            elif cur.weekday() != dow_idx:
+                # Esto no debería pasar si start es lunes y avanzamos día por día
+                week.append(None)
             else:
-                state = "active" if start_active <= day <= end_active else "muted"
-                fpp = (year, month, day) == FPP_DATE
-                row.append({
-                    "day": day,
+                week.append({
+                    "date": cur,
+                    "day": cur.day,
+                    "month_abbr": MONTH_ABBR_ES[cur.month],
                     "dow_idx": dow_idx,
-                    "state": state,
-                    "fpp": fpp,
+                    "fpp": cur == FPP_DATE,
                 })
-        rows.append(row)
-    return rows
+            cur += datetime.timedelta(days=1)
+        weeks.append(week)
+    return weeks
 
 
 def render_cell(cell) -> str:
-    """Renderiza una celda de día del calendario."""
+    """Renderiza una celda de día del calendario (versión celdas grandes con 3 líneas)."""
     if cell is None:
         return '<div class="cell empty"></div>'
 
-    state = cell["state"]
-    day = cell["day"]
-    dow = DOW_CLASS[cell["dow_idx"]]
-    month_abbr = MONTH_ABBR_ES[datetime.date(2026, 1, 1).month]  # placeholder
-    return ""  # replaced below
-
-
-def render_cell_v2(cell, month_abbr: str) -> str:
-    if cell is None:
-        return '<div class="cell empty"></div>'
-
-    day = cell["day"]
-    dow = DOW_CLASS[cell["dow_idx"]]
-    classes = ["cell", dow]
-
+    classes = ["cell", DOW_CLASS[cell["dow_idx"]]]
+    star = ""
     if cell["fpp"]:
         classes.append("fpp")
         star = '<span class="star">★</span>'
-    else:
-        star = ""
 
-    if cell["state"] == "muted":
-        classes.append("muted")
-        return (
-            f'<div class="{" ".join(classes)}">'
-            f'<div class="day-num">{day}</div>'
-            f'<div class="day-month">{month_abbr}</div>'
-            f'</div>'
-        )
+    day = cell["day"]
+    month = cell["month_abbr"]
 
-    classes.append("active")
     return (
         f'<div class="{" ".join(classes)}">'
         f'{star}'
-        f'<div class="day-num">{day} <span class="day-month">{month_abbr}</span></div>'
+        f'<div class="day-num">{day} <span class="day-month">{month}</span></div>'
         f'<div class="checkbox"></div>'
+        f'<div class="name-lines">'
         f'<div class="name-line"></div>'
+        f'<div class="name-line"></div>'
+        f'<div class="name-line"></div>'
+        f'</div>'
         f'</div>'
     )
 
 
-def render_page(year: int, month: int, page_num: int, total_pages: int) -> str:
-    month_label = MONTH_LABEL_ES[month]
-    month_abbr = MONTH_ABBR_ES[month]
-    weeks = build_calendar_cells(year, month)
+def fmt_range(start: datetime.date, end: datetime.date) -> str:
+    """Formato corto para el rango de fechas de cada hoja."""
+    if start.month == end.month:
+        return f"{start.day}–{end.day} {MONTH_ABBR_ES[start.month]}"
+    return f"{start.day} {MONTH_ABBR_ES[start.month]} – {end.day} {MONTH_ABBR_ES[end.month]}"
 
-    # Encabezado: subtítulo cambia según la página
-    if page_num == 1:
-        subtitle = "Noviembre 2026"
-    else:
-        subtitle = "Diciembre 2026"
+
+def render_page(start: datetime.date, end: datetime.date, page_num: int, total_pages: int) -> str:
+    weeks = build_weeks(start, end)
+    range_str = fmt_range(start, end)
+
+    # Encabezado: subtítulo con el rango de fechas
+    subtitle = range_str
 
     dow_row = ""
-    for i, (label, cls) in enumerate(zip(DOW_ES, DOW_CLASS)):
+    for label, cls in zip(DOW_ES, DOW_CLASS):
         weekend = " weekend" if cls in ("sab", "dom") else ""
         dow_row += f'<div class="dow{weekend}">{label}</div>'
 
     grid_html = dow_row
     for week in weeks:
         for cell in week:
-            grid_html += render_cell_v2(cell, month_abbr)
+            grid_html += render_cell(cell)
 
-    # Pequeña leyenda inferior
     legend_html = """
       <div class="legend">
         <div class="legend-item">
           <span class="legend-box active"></span>
-          <span>Día para apostar</span>
+          <span>Día para apostar · 3 líneas para firmar</span>
         </div>
         <div class="legend-item">
           <span class="legend-box fpp"></span>
           <span>16 dic · fecha probable de parto</span>
         </div>
-        <div class="legend-item">
-          <span class="legend-box muted"></span>
-          <span>Fuera del rango</span>
-        </div>
       </div>
     """
 
     return f"""
-    <section class="page" data-month="{month_label}">
+    <section class="page" data-range="{range_str}">
       <div class="bg-decor"></div>
       <header class="header">
         <div class="header-left">
@@ -142,14 +130,14 @@ def render_page(year: int, month: int, page_num: int, total_pages: int) -> str:
           <div class="subtitle">{subtitle}</div>
         </div>
         <div class="header-right">
-          <div class="month-label">{month_label} 2026</div>
+          <div class="month-label">{range_str}</div>
           <div>Hoja {page_num} de {total_pages}</div>
         </div>
       </header>
 
       <div class="instr">
         <span class="icon">✎</span>
-        <span><strong>Cómo jugar:</strong> Elegí el día que creés que nacerá Santiago, marcá el cuadrito ☐ y escribi tu nombre en la línea de abajo.</span>
+        <span><strong>Cómo jugar:</strong> Elegí el día que creés que nacerá Santiago, marcá el cuadrito ☐ y escribi tu nombre en una de las líneas. ¡Cada casilla tiene lugar para 3 personas!</span>
       </div>
 
       <div class="cal">
@@ -178,7 +166,6 @@ CSS = """
   --yellow: #FFE9B1;
   --ink: #3D4A5C;
   --muted: #AEB6C2;
-  --muted-bg: #ECEEF2;
   --line: #DEE5ED;
 }
 html, body {
@@ -191,7 +178,7 @@ html, body {
 .page {
   width: 297mm;
   height: 210mm;
-  padding: 10mm 13mm 8mm;
+  padding: 9mm 13mm 7mm;
   page-break-after: always;
   position: relative;
   display: flex;
@@ -200,8 +187,7 @@ html, body {
 }
 .page:last-child { page-break-after: auto; }
 
-/* Decorative background: radial gradients painted directly on .bg-decor.
-   No positioned children, so nothing can overflow the page. */
+/* Decorative background: radial gradients painted directly on .bg-decor */
 .bg-decor {
   position: absolute;
   inset: 0;
@@ -219,9 +205,9 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 5mm;
+  margin-bottom: 4mm;
   border-bottom: 0.4mm solid var(--line);
-  padding-bottom: 3.5mm;
+  padding-bottom: 3mm;
 }
 .header-left .eyebrow {
   font-size: 8.5pt;
@@ -270,8 +256,8 @@ html, body {
   background: #fff;
   border: 0.3mm solid var(--line);
   border-radius: 2mm;
-  padding: 2.2mm 4mm;
-  margin-bottom: 4mm;
+  padding: 2mm 4mm;
+  margin-bottom: 3.5mm;
   font-size: 9pt;
   line-height: 1.4;
 }
@@ -284,17 +270,17 @@ html, body {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: 6.5mm repeat(6, 1fr);
-  gap: 1.0mm;
+  grid-template-rows: 6mm repeat(3, 1fr);
+  gap: 1.2mm;
 }
 .cal .dow {
   text-align: center;
   font-family: 'Baloo 2', cursive;
-  font-size: 8.5pt;
+  font-size: 9pt;
   font-weight: 600;
   color: var(--ink);
   opacity: 0.55;
-  padding: 1mm 0;
+  padding: 0.5mm 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -305,76 +291,62 @@ html, body {
   background: #fff;
   border: 0.3mm solid var(--line);
   border-radius: 1.8mm;
-  padding: 1.3mm 1.8mm 1.5mm;
+  padding: 2.2mm 2.5mm 2.5mm;
   display: flex;
   flex-direction: column;
   position: relative;
   min-height: 0;
-  overflow: hidden;
 }
 .cell.empty {
   background: transparent;
   border: none;
 }
-.cell.muted {
-  background: var(--muted-bg);
-  border-color: transparent;
-  padding: 1.3mm 1.8mm;
-}
-.cell.muted .day-num {
-  font-family: 'Baloo 2', cursive;
-  font-size: 11pt;
-  font-weight: 500;
-  color: var(--muted);
-  line-height: 1;
-}
-.cell.muted .day-month {
-  font-family: 'Inter', sans-serif;
-  font-size: 7.5pt;
-  font-weight: 500;
-  color: var(--muted);
-  opacity: 0.7;
-  margin-top: 0.5mm;
-  letter-spacing: 0.05em;
-}
-.cell.muted .checkbox,
-.cell.muted .name-line { display: none; }
 
-.cell.active .day-num {
+.cell .day-num {
   font-family: 'Baloo 2', cursive;
-  font-size: 13pt;
+  font-size: 17pt;
   font-weight: 700;
   color: var(--ink);
   line-height: 1;
   display: flex;
   align-items: baseline;
-  gap: 1.2mm;
+  gap: 1.5mm;
+  margin-bottom: 1mm;
 }
-.cell.active .day-month {
+.cell .day-month {
   font-family: 'Inter', sans-serif;
-  font-size: 7.5pt;
+  font-size: 8.5pt;
   font-weight: 500;
   color: var(--ink);
   opacity: 0.55;
   letter-spacing: 0.05em;
 }
-.cell.active .checkbox {
-  width: 3.5mm; height: 3.5mm;
-  border: 0.35mm solid var(--sky-deep);
-  border-radius: 0.8mm;
-  margin-top: auto;
-  margin-bottom: 1.2mm;
+.cell .checkbox {
+  position: absolute;
+  top: 2.2mm; right: 2.5mm;
+  width: 4.5mm; height: 4.5mm;
+  border: 0.4mm solid var(--sky-deep);
+  border-radius: 1mm;
   background: #fff;
 }
-.cell.active .name-line {
+
+/* Name lines (3 per cell) */
+.cell .name-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5mm;
+  margin-top: auto;
+  padding-top: 1.5mm;
+}
+.cell .name-line {
   border-bottom: 0.3mm solid var(--line);
-  height: 3mm;
+  height: 4.5mm;
   width: 100%;
 }
 
 /* Weekend cells get a soft sky tint */
-.cell.active.sat,
-.cell.active.sun {
+.cell.sat,
+.cell.sun {
   background: var(--sky-soft);
 }
 
@@ -382,12 +354,9 @@ html, body {
 .cell.fpp {
   background: var(--mint-deep) !important;
   border: 0.5mm solid var(--mint-deep);
-  color: #fff;
-  box-shadow: 0 0 0 0.3mm rgba(107, 181, 138, 0.3);
 }
-.cell.fpp .day-num { color: #fff; font-size: 15pt; }
-.cell.fpp .day-num .day-month { color: #fff; opacity: 0.9; }
-.cell.fpp .day-month { color: #fff; opacity: 0.95; }
+.cell.fpp .day-num { color: #fff; }
+.cell.fpp .day-month { color: #fff; opacity: 0.9; }
 .cell.fpp .checkbox {
   border-color: #fff;
   background: rgba(255,255,255,0.18);
@@ -395,11 +364,14 @@ html, body {
 .cell.fpp .name-line { border-color: rgba(255,255,255,0.65); }
 .cell.fpp .star {
   position: absolute;
-  bottom: 1.2mm; right: 1.5mm;
+  top: 2.2mm; left: 2.5mm;
   color: #FFE066;
-  font-size: 11pt;
+  font-size: 13pt;
   line-height: 1;
   text-shadow: 0 0 1mm rgba(0,0,0,0.15);
+}
+.cell.fpp .day-num {
+  padding-left: 6mm;  /* espacio para la estrella */
 }
 
 .footer {
@@ -430,7 +402,6 @@ html, body {
   background: #fff;
 }
 .footer .legend-box.fpp { background: var(--mint-deep); border-color: var(--mint-deep); }
-.footer .legend-box.muted { background: var(--muted-bg); border-color: transparent; }
 """
 
 
@@ -442,7 +413,7 @@ def main():
         '<meta charset="UTF-8">',
         '<title>¿Cuándo nacerá Santiago? — Calendario</title>',
         '<meta name="author" content="Z.ai">',
-        '<meta name="description" content="Calendario de apuestas para la fecha probable de parto de Santiago">',
+        '<meta name="description" content="Calendario de fechas probables de parto para Santiago">',
         '<link rel="preconnect" href="https://fonts.googleapis.com">',
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
         '<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">',
@@ -452,8 +423,9 @@ def main():
         '</head>',
         '<body>',
     ]
-    html_parts.append(render_page(2026, 11, 1, 2))
-    html_parts.append(render_page(2026, 12, 2, 2))
+    total = len(SHEETS)
+    for i, (start, end) in enumerate(SHEETS, 1):
+        html_parts.append(render_page(start, end, i, total))
     html_parts.append('</body></html>')
 
     html_str = "\n".join(html_parts)
