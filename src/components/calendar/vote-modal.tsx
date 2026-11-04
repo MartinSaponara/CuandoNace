@@ -141,14 +141,14 @@ export function VoteModal({ selectedDate, existingVote, onClose, onVoted }: Prop
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Fredoka, "Baloo 2", sans-serif' }}>
-                ¡Apuesta registrada!
+                ¡Voto registrado!
               </h2>
               <p className="text-sm text-slate-600 mt-1">
-                {success.action === 'created' ? 'Gracias por sumarte' : 'Cambiaste tu apuesta'}
+                {success.action === 'created' ? 'Gracias por sumarte' : 'Cambiaste tu voto'}
               </p>
             </div>
             <div className="bg-sky-50 border-2 border-sky-100 rounded-xl px-4 py-3 w-full">
-              <div className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Tu apuesta</div>
+              <div className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Tu voto</div>
               <div className="text-lg font-bold text-slate-800 mt-0.5" style={{ fontFamily: 'Fredoka, "Baloo 2", sans-serif' }}>
                 {formatDateLong(success.date)}
               </div>
@@ -166,7 +166,7 @@ export function VoteModal({ selectedDate, existingVote, onClose, onVoted }: Prop
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-800" style={{ fontFamily: 'Fredoka, "Baloo 2", sans-serif' }}>
-                Ya tenés una apuesta registrada
+                Ya tenés un voto registrado
               </h2>
               <p className="text-sm text-slate-600 mt-1">
                 Habías votado el <strong>{formatDateLong(needConfirm.date)}</strong> a las <strong>{formatHour(needConfirm.hour)}</strong>
@@ -241,7 +241,7 @@ export function VoteModal({ selectedDate, existingVote, onClose, onVoted }: Prop
                   disabled={loading}
                 />
                 <p className="text-xs text-slate-500">
-                  🔒 Tu email identifica tu apuesta. Solo vos podés cambiarla.
+                  🔒 Tu email identifica tu voto. Solo vos podés cambiarlo.
                 </p>
               </div>
 
@@ -284,7 +284,7 @@ export function VoteModal({ selectedDate, existingVote, onClose, onVoted }: Prop
                 disabled={loading || !name.trim() || !email.trim()}
                 className="flex-1 sm:flex-none bg-emerald-500 hover:bg-emerald-600 text-white"
               >
-                {loading ? 'Enviando...' : 'Confirmar apuesta'}
+                {loading ? 'Enviando...' : 'Confirmar voto'}
               </Button>
             </DialogFooter>
           </>

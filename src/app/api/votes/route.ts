@@ -91,7 +91,7 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             ok: false,
-            error: 'Ya registraste una apuesta. ¿Querés cambiarla por esta nueva?',
+            error: 'Ya registraste un voto. ¿Querés cambiarlo por este nuevo?',
             existingVote: toPublicVote(existing),
             needConfirm: true,
           },

@@ -50,13 +50,13 @@ export default function Home() {
     [refresh]
   )
 
-  // Map de fecha → count
-  const votesByDate = new Map<string, number>()
-  const votedDates = new Set<string>()
+  // Map de fecha → lista de votos (con nombres y horas) para el popover
+  const votesByDate = new Map<string, PublicVote[]>()
   if (data) {
     for (const v of data.votes) {
-      votesByDate.set(v.date, (votesByDate.get(v.date) ?? 0) + 1)
-      votedDates.add(v.date)
+      const arr = votesByDate.get(v.date) ?? []
+      arr.push(v)
+      votesByDate.set(v.date, arr)
     }
   }
 
@@ -98,7 +98,7 @@ export default function Home() {
           </div>
           <p className="text-slate-600 mt-3 max-w-xl mx-auto text-sm sm:text-base">
             Elegí el día y la hora en que creés que va a nacer Santiago.
-            Cada persona puede hacer una apuesta, identificada por su email.
+            Cada persona puede votar una sola vez, identificada por su email.
           </p>
         </header>
 
@@ -124,7 +124,6 @@ export default function Home() {
                   startDate={range.start}
                   endDate={range.end}
                   votesByDate={votesByDate}
-                  votedDates={votedDates}
                   onDayClick={(d) => setSelectedDate(d)}
                 />
               </section>
@@ -138,7 +137,7 @@ export default function Home() {
                   Cómo jugar:
                 </strong>{' '}
                 Tocá un día del calendario, dejá tu nombre y email, y elegí la hora.
-                Si ya habías votado, te vamos a preguntar si querés cambiar tu apuesta.
+                Si ya habías votado, te vamos a preguntar si querés cambiar tu voto.
                 El día con la estrella ⭐ es la fecha probable de parto indicada por el médico (16 dic).
               </div>
             </div>
@@ -148,7 +147,7 @@ export default function Home() {
           <aside className="lg:sticky lg:top-4 self-start">
             {loading ? (
               <div className="bg-white border-2 border-slate-200 rounded-2xl p-6 text-center text-slate-400">
-                Cargando apuestas...
+                Cargando votos...
               </div>
             ) : (
               <RankingPanel

@@ -34,7 +34,7 @@ export function RankingPanel({ ranking, totalVotes }: Props) {
           className="text-lg sm:text-xl font-bold text-slate-800"
           style={{ fontFamily: 'Fredoka, "Baloo 2", sans-serif' }}
         >
-          🔥 Apuestas hasta ahora
+          🔥 Votos hasta ahora
         </h3>
         <span className="text-sm text-slate-500">
           {totalVotes} {totalVotes === 1 ? 'persona' : 'personas'}
@@ -45,7 +45,7 @@ export function RankingPanel({ ranking, totalVotes }: Props) {
         <div className="text-center py-8 text-slate-500">
           <div className="text-3xl mb-2">🍼</div>
           <p className="text-sm">
-            Todavía no hay apuestas.
+            Todavía no hay votos.
             <br />
             ¡Sé la primera persona en sumarte!
           </p>

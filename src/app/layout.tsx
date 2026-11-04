@@ -17,7 +17,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "¿Cuándo nacerá Santiago? · Calendario interactivo",
   description: "Apostá en qué día y hora va a nacer Santiago. Elegí tu fecha, dejá tu nombre y seguí el ranking en vivo.",
-  keywords: ["calendario", "fecha probable de parto", "baby shower", "apuestas", "Santiago"],
+  keywords: ["calendario", "fecha probable de parto", "baby shower", "votos", "Santiago"],
   authors: [{ name: "Familia de Santiago" }],
   openGraph: {
     title: "¿Cuándo nacerá Santiago?",

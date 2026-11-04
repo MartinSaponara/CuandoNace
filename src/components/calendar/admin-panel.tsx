@@ -207,7 +207,7 @@ export function AdminPanel({ onClose }: { onClose: () => void }) {
                 🔒 Panel de los papás
               </DialogTitle>
               <DialogDescription>
-                Ingresá el password para ver todas las apuestas y gestionar el resultado final.
+                Ingresá el password para ver todos los votos y gestionar el resultado final.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-3 py-2">
@@ -246,12 +246,12 @@ export function AdminPanel({ onClose }: { onClose: () => void }) {
                 📊 Panel de los papás
               </DialogTitle>
               <DialogDescription>
-                {data ? `${data.total} apuestas registradas` : 'Cargando...'}
+                {data ? `${data.total} votos registrados` : 'Cargando...'}
               </DialogDescription>
             </DialogHeader>
 
             {loadingData || !data ? (
-              <div className="py-8 text-center text-slate-500">Cargando apuestas...</div>
+              <div className="py-8 text-center text-slate-500">Cargando votos...</div>
             ) : (
               <div className="space-y-4">
                 {/* Sección: Marcar nacimiento */}
@@ -374,10 +374,10 @@ export function AdminPanel({ onClose }: { onClose: () => void }) {
                   <p className="text-sm text-slate-500 text-center py-4">{result.message}</p>
                 )}
 
-                {/* Lista de todas las apuestas */}
+                {/* Lista de todos los votos */}
                 <div>
                   <h4 className="font-semibold text-slate-700 mb-2" style={{ fontFamily: 'Fredoka, "Baloo 2", sans-serif' }}>
-                    Todas las apuestas
+                    Todos los votos
                   </h4>
                   <div className="space-y-1 max-h-60 overflow-y-auto pr-1">
                     {data.votes.map((v) => {
@@ -404,7 +404,7 @@ export function AdminPanel({ onClose }: { onClose: () => void }) {
                       )
                     })}
                     {data.votes.length === 0 && (
-                      <p className="text-center text-slate-500 py-4">Todavía no hay apuestas.</p>
+                      <p className="text-center text-slate-500 py-4">Todavía no hay votos.</p>
                     )}
                   </div>
                 </div>
