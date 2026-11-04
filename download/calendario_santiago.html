@@ -13,18 +13,18 @@
 @page { size: A4 landscape; margin: 0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --cream: #FFF8F2;
+  --cream: #F4FAFE;
   --sky: #BDE3F5;
+  --sky-soft: #E5F2FA;
   --sky-deep: #5BA7D9;
-  --rose: #FBD3DD;
-  --rose-deep: #E48BA3;
   --mint: #C7E8CE;
+  --mint-soft: #E6F3E9;
   --mint-deep: #6BB58A;
   --yellow: #FFE9B1;
   --ink: #3D4A5C;
-  --muted: #B7B0AA;
-  --muted-bg: #EFE9E3;
-  --line: #E5DDD4;
+  --muted: #AEB6C2;
+  --muted-bg: #ECEEF2;
+  --line: #DEE5ED;
 }
 html, body {
   background: var(--cream);
@@ -53,9 +53,9 @@ html, body {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 100% 0%, rgba(189, 227, 245, 0.55) 0%, rgba(189, 227, 245, 0.20) 18%, transparent 38%),
-    radial-gradient(circle at 0% 100%, rgba(251, 211, 221, 0.50) 0%, rgba(251, 211, 221, 0.18) 16%, transparent 35%),
-    radial-gradient(circle at 92% 88%, rgba(255, 233, 177, 0.40) 0%, transparent 18%);
+    radial-gradient(circle at 100% 0%, rgba(189, 227, 245, 0.70) 0%, rgba(189, 227, 245, 0.25) 18%, transparent 38%),
+    radial-gradient(circle at 0% 100%, rgba(199, 232, 206, 0.60) 0%, rgba(199, 232, 206, 0.22) 16%, transparent 35%),
+    radial-gradient(circle at 92% 88%, rgba(189, 227, 245, 0.45) 0%, transparent 18%);
 }
 
 .header {
@@ -72,7 +72,7 @@ html, body {
   font-size: 8.5pt;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: var(--rose-deep);
+  color: var(--mint-deep);
   font-weight: 600;
   margin-bottom: 1.5mm;
 }
@@ -120,8 +120,8 @@ html, body {
   font-size: 9pt;
   line-height: 1.4;
 }
-.instr .icon { font-size: 11pt; color: var(--rose-deep); }
-.instr strong { color: var(--rose-deep); }
+.instr .icon { font-size: 11pt; color: var(--mint-deep); }
+.instr strong { color: var(--mint-deep); }
 
 .cal {
   position: relative;
@@ -144,7 +144,7 @@ html, body {
   align-items: center;
   justify-content: center;
 }
-.cal .dow.weekend { color: var(--rose-deep); opacity: 0.9; }
+.cal .dow.weekend { color: var(--sky-deep); opacity: 0.9; }
 
 .cell {
   background: #fff;
@@ -217,10 +217,10 @@ html, body {
   width: 100%;
 }
 
-/* Weekend cells get a soft pink tint */
+/* Weekend cells get a soft sky tint */
 .cell.active.sat,
 .cell.active.sun {
-  background: #FFF3F6;
+  background: var(--sky-soft);
 }
 
 /* Highlighted FPP cell (Dec 16) */
@@ -245,22 +245,6 @@ html, body {
   font-size: 11pt;
   line-height: 1;
   text-shadow: 0 0 1mm rgba(0,0,0,0.15);
-}
-.cell.fpp .fpp-tag {
-  position: absolute;
-  top: 1.2mm; left: 50%;
-  transform: translateX(-50%);
-  background: var(--ink);
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-size: 6.5pt;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.5mm 1.6mm;
-  border-radius: 0.8mm;
-  white-space: nowrap;
-  z-index: 3;
 }
 
 .footer {
@@ -303,7 +287,7 @@ html, body {
         <div class="header-left">
           <div class="eyebrow">Calendario interactivo</div>
           <h1>¿Cuándo nacerá Santiago?</h1>
-          <div class="subtitle">Calendario de apuestas · Noviembre 2026</div>
+          <div class="subtitle">Noviembre 2026</div>
         </div>
         <div class="header-right">
           <div class="month-label">Noviembre 2026</div>
@@ -329,7 +313,7 @@ html, body {
         </div>
         <div class="legend-item">
           <span class="legend-box fpp"></span>
-          <span>Fecha probable de parto (16 dic)</span>
+          <span>16 dic · fecha probable de parto</span>
         </div>
         <div class="legend-item">
           <span class="legend-box muted"></span>
@@ -348,7 +332,7 @@ html, body {
         <div class="header-left">
           <div class="eyebrow">Calendario interactivo</div>
           <h1>¿Cuándo nacerá Santiago?</h1>
-          <div class="subtitle">Calendario de apuestas · Diciembre 2026</div>
+          <div class="subtitle">Diciembre 2026</div>
         </div>
         <div class="header-right">
           <div class="month-label">Diciembre 2026</div>
@@ -362,7 +346,7 @@ html, body {
       </div>
 
       <div class="cal">
-        <div class="dow">Lun</div><div class="dow">Mar</div><div class="dow">Mié</div><div class="dow">Jue</div><div class="dow">Vie</div><div class="dow weekend">Sáb</div><div class="dow weekend">Dom</div><div class="cell empty"></div><div class="cell mar active"><div class="day-num">1 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">2 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">3 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">4 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">5 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">6 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">7 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">8 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">9 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">10 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">11 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">12 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">13 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">14 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">15 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie fpp active"><span class="star">★</span><div class="day-num">16 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div><span class="fpp-tag">FPP médica</span></div><div class="cell jue active"><div class="day-num">17 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">18 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">19 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">20 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">21 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">22 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">23 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">24 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">25 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">26 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom muted"><div class="day-num">27</div><div class="day-month">dic</div></div><div class="cell lun muted"><div class="day-num">28</div><div class="day-month">dic</div></div><div class="cell mar muted"><div class="day-num">29</div><div class="day-month">dic</div></div><div class="cell mie muted"><div class="day-num">30</div><div class="day-month">dic</div></div><div class="cell jue muted"><div class="day-num">31</div><div class="day-month">dic</div></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div>
+        <div class="dow">Lun</div><div class="dow">Mar</div><div class="dow">Mié</div><div class="dow">Jue</div><div class="dow">Vie</div><div class="dow weekend">Sáb</div><div class="dow weekend">Dom</div><div class="cell empty"></div><div class="cell mar active"><div class="day-num">1 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">2 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">3 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">4 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">5 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">6 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">7 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">8 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">9 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">10 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">11 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">12 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">13 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">14 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">15 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie fpp active"><span class="star">★</span><div class="day-num">16 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">17 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">18 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">19 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom active"><div class="day-num">20 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell lun active"><div class="day-num">21 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mar active"><div class="day-num">22 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell mie active"><div class="day-num">23 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell jue active"><div class="day-num">24 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell vie active"><div class="day-num">25 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell sab active"><div class="day-num">26 <span class="day-month">dic</span></div><div class="checkbox"></div><div class="name-line"></div></div><div class="cell dom muted"><div class="day-num">27</div><div class="day-month">dic</div></div><div class="cell lun muted"><div class="day-num">28</div><div class="day-month">dic</div></div><div class="cell mar muted"><div class="day-num">29</div><div class="day-month">dic</div></div><div class="cell mie muted"><div class="day-num">30</div><div class="day-month">dic</div></div><div class="cell jue muted"><div class="day-num">31</div><div class="day-month">dic</div></div><div class="cell empty"></div><div class="cell empty"></div><div class="cell empty"></div>
       </div>
 
       <footer class="footer">
@@ -374,7 +358,7 @@ html, body {
         </div>
         <div class="legend-item">
           <span class="legend-box fpp"></span>
-          <span>Fecha probable de parto (16 dic)</span>
+          <span>16 dic · fecha probable de parto</span>
         </div>
         <div class="legend-item">
           <span class="legend-box muted"></span>

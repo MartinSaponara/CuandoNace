@@ -70,10 +70,8 @@ def render_cell_v2(cell, month_abbr: str) -> str:
     if cell["fpp"]:
         classes.append("fpp")
         star = '<span class="star">★</span>'
-        fpp_tag = '<span class="fpp-tag">FPP médica</span>'
     else:
         star = ""
-        fpp_tag = ""
 
     if cell["state"] == "muted":
         classes.append("muted")
@@ -91,7 +89,6 @@ def render_cell_v2(cell, month_abbr: str) -> str:
         f'<div class="day-num">{day} <span class="day-month">{month_abbr}</span></div>'
         f'<div class="checkbox"></div>'
         f'<div class="name-line"></div>'
-        f'{fpp_tag}'
         f'</div>'
     )
 
@@ -103,9 +100,9 @@ def render_page(year: int, month: int, page_num: int, total_pages: int) -> str:
 
     # Encabezado: subtítulo cambia según la página
     if page_num == 1:
-        subtitle = "Calendario de apuestas · Noviembre 2026"
+        subtitle = "Noviembre 2026"
     else:
-        subtitle = "Calendario de apuestas · Diciembre 2026"
+        subtitle = "Diciembre 2026"
 
     dow_row = ""
     for i, (label, cls) in enumerate(zip(DOW_ES, DOW_CLASS)):
@@ -126,7 +123,7 @@ def render_page(year: int, month: int, page_num: int, total_pages: int) -> str:
         </div>
         <div class="legend-item">
           <span class="legend-box fpp"></span>
-          <span>Fecha probable de parto (16 dic)</span>
+          <span>16 dic · fecha probable de parto</span>
         </div>
         <div class="legend-item">
           <span class="legend-box muted"></span>
@@ -171,18 +168,18 @@ CSS = """
 @page { size: A4 landscape; margin: 0; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --cream: #FFF8F2;
+  --cream: #F4FAFE;
   --sky: #BDE3F5;
+  --sky-soft: #E5F2FA;
   --sky-deep: #5BA7D9;
-  --rose: #FBD3DD;
-  --rose-deep: #E48BA3;
   --mint: #C7E8CE;
+  --mint-soft: #E6F3E9;
   --mint-deep: #6BB58A;
   --yellow: #FFE9B1;
   --ink: #3D4A5C;
-  --muted: #B7B0AA;
-  --muted-bg: #EFE9E3;
-  --line: #E5DDD4;
+  --muted: #AEB6C2;
+  --muted-bg: #ECEEF2;
+  --line: #DEE5ED;
 }
 html, body {
   background: var(--cream);
@@ -211,9 +208,9 @@ html, body {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 100% 0%, rgba(189, 227, 245, 0.55) 0%, rgba(189, 227, 245, 0.20) 18%, transparent 38%),
-    radial-gradient(circle at 0% 100%, rgba(251, 211, 221, 0.50) 0%, rgba(251, 211, 221, 0.18) 16%, transparent 35%),
-    radial-gradient(circle at 92% 88%, rgba(255, 233, 177, 0.40) 0%, transparent 18%);
+    radial-gradient(circle at 100% 0%, rgba(189, 227, 245, 0.70) 0%, rgba(189, 227, 245, 0.25) 18%, transparent 38%),
+    radial-gradient(circle at 0% 100%, rgba(199, 232, 206, 0.60) 0%, rgba(199, 232, 206, 0.22) 16%, transparent 35%),
+    radial-gradient(circle at 92% 88%, rgba(189, 227, 245, 0.45) 0%, transparent 18%);
 }
 
 .header {
@@ -230,7 +227,7 @@ html, body {
   font-size: 8.5pt;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: var(--rose-deep);
+  color: var(--mint-deep);
   font-weight: 600;
   margin-bottom: 1.5mm;
 }
@@ -278,8 +275,8 @@ html, body {
   font-size: 9pt;
   line-height: 1.4;
 }
-.instr .icon { font-size: 11pt; color: var(--rose-deep); }
-.instr strong { color: var(--rose-deep); }
+.instr .icon { font-size: 11pt; color: var(--mint-deep); }
+.instr strong { color: var(--mint-deep); }
 
 .cal {
   position: relative;
@@ -302,7 +299,7 @@ html, body {
   align-items: center;
   justify-content: center;
 }
-.cal .dow.weekend { color: var(--rose-deep); opacity: 0.9; }
+.cal .dow.weekend { color: var(--sky-deep); opacity: 0.9; }
 
 .cell {
   background: #fff;
@@ -375,10 +372,10 @@ html, body {
   width: 100%;
 }
 
-/* Weekend cells get a soft pink tint */
+/* Weekend cells get a soft sky tint */
 .cell.active.sat,
 .cell.active.sun {
-  background: #FFF3F6;
+  background: var(--sky-soft);
 }
 
 /* Highlighted FPP cell (Dec 16) */
@@ -403,22 +400,6 @@ html, body {
   font-size: 11pt;
   line-height: 1;
   text-shadow: 0 0 1mm rgba(0,0,0,0.15);
-}
-.cell.fpp .fpp-tag {
-  position: absolute;
-  top: 1.2mm; left: 50%;
-  transform: translateX(-50%);
-  background: var(--ink);
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-size: 6.5pt;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.5mm 1.6mm;
-  border-radius: 0.8mm;
-  white-space: nowrap;
-  z-index: 3;
 }
 
 .footer {
